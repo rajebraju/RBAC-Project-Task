@@ -18,7 +18,7 @@ const server = http.createServer(app);
 
 // Fix: Use specific origin, not "true"
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "rbac-project-task-frontend.vercel.app",
   credentials: true
 }));
 app.use(express.json());
@@ -27,7 +27,8 @@ app.use(express.json());
 import { Server } from 'socket.io';
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "hrbac-project-task-frontend.vercel.app",
+    // origin: "http://localhost:5173",
     methods: ["GET", "POST", "PATCH"],
     credentials: true
   }
