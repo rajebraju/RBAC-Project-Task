@@ -6,7 +6,7 @@ export const initSocket = (token, user) => {
   if (socket) socket.disconnect();
 
   // socket = io('http://localhost:8080', {
-  socket = io('https://rbac-project-task-1.onrender.com', {
+  socket = io(process.env.REACT_APP_API_URL, {
     auth: { token },
     reconnection: true,
     reconnectionAttempts: 5,
