@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       '/api': {
         // target: 'http://localhost:8080',
-        target: 'https://rbac-project-task-1.onrender.com',
+        target: process.env.REACT_APP_API_URL,
         changeOrigin: true,
         secure: false,
       }
