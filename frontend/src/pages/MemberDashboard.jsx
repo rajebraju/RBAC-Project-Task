@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { getSocket, initSocket } from '../socket';
 import UserList from '../components/UserList';
 import { useNavigate } from 'react-router-dom';
+import { api, setAuthToken } from '../api';
 
 export default function MemberDashboard() {
   const { user, setUser, logout } = useAuth();
@@ -15,14 +16,23 @@ export default function MemberDashboard() {
   useEffect(() => {
     if (!user) return;
     const token = localStorage.getItem('token');
+    setAuthToken(token);
 
     let socket = getSocket();
     if (!socket) socket = initSocket(token, user);
 
-    fetch('/api/tasks/my-tasks', { headers: { Authorization: `Bearer ${token}` } })
-      .then((r) => r.json())
-      .then((data) => setTasks(Array.isArray(data) ? data : []));
+    // Fetch tasks
+    const fetchTasks = async () => {
+      try {
+        const { data } = await api.get('/api/tasks/my-tasks');
+        setTasks(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error('Failed to fetch tasks', err);
+      }
+    };
+    fetchTasks();
 
+    // Socket event handlers
     const handleTaskCreated = (task) => {
       setTasks((prev) => {
         if (prev.find((t) => t._id === task._id)) return prev;
@@ -47,7 +57,6 @@ export default function MemberDashboard() {
       setNotifications((prev) => [notif, ...prev]);
     };
 
-    if (!socket) return;
     const handleTasksDeleted = (deletedTaskIds) => {
       setTasks(prev => prev.filter(t => !deletedTaskIds.includes(t._id)));
     };
@@ -73,18 +82,14 @@ export default function MemberDashboard() {
       socket.off('tasks-deleted', handleTasksDeleted);
       socket.off('role-updated');
     };
-
-  }, [user]);
+  }, [user, setUser]);
 
   const updateTask = async (id, status) => {
-    await fetch(`/api/tasks/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify({ status }),
-    });
+    try {
+      await api.patch(`/api/tasks/${id}`, { status });
+    } catch (err) {
+      console.error('Failed to update task', err);
+    }
   };
 
   if (!user) return null;
