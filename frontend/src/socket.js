@@ -6,7 +6,7 @@ export const initSocket = (token, user) => {
   if (socket) socket.disconnect();
 
   // socket = io('http://localhost:8080', {
-  socket = io(process.env.REACT_APP_API_URL, {
+  socket = io(process.env.VITE_API_URL, {
     auth: { token },
     reconnection: true,
     reconnectionAttempts: 5,
