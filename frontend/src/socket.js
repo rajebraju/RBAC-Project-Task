@@ -4,6 +4,7 @@ let socket;
 
 export const initSocket = (token, user) => {
   if (socket) socket.disconnect();
+
   const apiUrl = import.meta.env.VITE_API_URL;
 
   socket = io(apiUrl, {
@@ -15,11 +16,9 @@ export const initSocket = (token, user) => {
 
   socket.on('connect', () => {
     console.log('Connected to socket server:', socket.id);
-    // Register user with backend
     socket.emit('register', { id: user.id, role: user.role, name: user.name });
   });
 
-  // Optional: log errors (helps catch auth/role issues)
   socket.on('connect_error', (e) => {
     console.error('Socket connect_error:', e.message);
   });
