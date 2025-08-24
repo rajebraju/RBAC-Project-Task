@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://rbac-project-task-1.onrender.com/api/$1"
+    }
+  ]
+}
