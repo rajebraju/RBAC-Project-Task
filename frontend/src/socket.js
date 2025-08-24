@@ -11,7 +11,8 @@ export const initSocket = (token, user) => {
     auth: { token },
     reconnection: true,
     reconnectionAttempts: 5,
-    reconnectionDelay: 1000
+    reconnectionDelay: 1000,
+    secure: false, // for HTTPS → HTTP proxy
   });
 
   socket.on('connect', () => {
