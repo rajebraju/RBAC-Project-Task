@@ -18,7 +18,7 @@ const server = http.createServer(app);
 
 // Fix: Use specific origin, not "true"
 app.use(cors({
-  origin: "https://frontend-task-flame-six.vercel.ap",
+  origin: "https://frontend-task-flame-six.vercel.app",
   credentials: true
 }));
 app.use(express.json());
@@ -27,8 +27,7 @@ app.use(express.json());
 import { Server } from 'socket.io';
 const io = new Server(server, {
   cors: {
-    origin: "https://frontend-task-flame-six.vercel.ap",
-    // origin: "http://localhost:5173",
+    origin: "https://frontend-task-flame-six.vercel.app",
     methods: ["GET", "POST", "PATCH"],
     credentials: true
   }
@@ -65,7 +64,7 @@ io.on('connection', (socket) => {
   onlineUsers.set(userId, {
     socketId: socket.id,
     userId,
-    role: socket.user.role, // already lowercase
+    role: socket.user.role,
     name: socket.user.name
   });
 
@@ -75,7 +74,6 @@ io.on('connection', (socket) => {
   // Listen for explicit registration (redundant but safe)
   socket.on('register', (data) => {
     console.log(`User registered via event:`, data);
-    // Ensure data matches socket.user (security check)
     if (data.id === userId) {
       onlineUsers.set(userId, {
         socketId: socket.id,
@@ -112,7 +110,7 @@ app.use('/api/tasks', taskRoutes);
 
 // Test route
 app.get('/api/protected', protect, (req, res) => {
-  res.json({ user: req.userObj }); // Return full user
+  res.json({ user: req.userObj }); 
 });
 
 // Connect DB & Start Server
